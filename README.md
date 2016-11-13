@@ -38,7 +38,6 @@ When you set `inlineSource` to a regular expression the source code for any java
 ```javascript
 plugins: [
   new HtmlWebpackPlugin({
-    inject: true,
 		inlineSource: '.(js|css)$' // embed all javascript and css inline
 	}),
   new HtmlWebpackInlineSourcePlugin()
