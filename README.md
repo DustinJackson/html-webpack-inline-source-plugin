@@ -1,4 +1,4 @@
-Harddisk extension for the HTML Webpack Plugin
+Inline Source extension for the HTML Webpack Plugin
 ========================================
 [![Build status](https://travis-ci.org/dustinjackson/html-webpack-inline-source-plugin.svg)](https://travis-ci.org/dustinjackson/html-webpack-inline-source-plugin) [![js-semistandard-style](https://img.shields.io/badge/code%20style-semistandard-brightgreen.svg?style=flat-square)](https://github.com/Flet/semistandard)
 
