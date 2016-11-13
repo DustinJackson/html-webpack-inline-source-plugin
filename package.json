@@ -1,0 +1,43 @@
+{
+  "name": "html-webpack-inline-source-plugin",
+  "version": "0.0.1",
+  "description": "Embed javascript and css source inline when using the webpack dev server or middleware",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "prepublish": "npm run test",
+    "pretest": "semistandard",
+    "test": "jasmine",
+    "debug": "node-debug jasmine"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dustinjackson/html-webpack-inline-source-plugin.git"
+  },
+  "keywords": [
+    "webpack",
+    "plugin",
+    "html-webpack-plugin",
+    "inline",
+    "source"
+  ],
+  "author": "Dustin Jackson <dustin.jackson@live.com> (https://github.com/DustinJackson)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dustinjackson/html-webpack-inline-source-plugin/issues"
+  },
+  "homepage": "https://github.com/dustinjackson/html-webpack-inline-source-plugin",
+  "devDependencies": {
+    "cheerio": "^0.22.0",
+    "css-loader": "^0.25.0",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "html-webpack-plugin": "^2.16.0",
+    "jasmine": "^2.4.1",
+    "rimraf": "^2.5.2",
+    "semistandard": "^7.0.5",
+    "style-loader": "^0.13.1",
+    "webpack": "^1.13.0"
+  }
+}
