@@ -5,7 +5,7 @@ Inline Source extension for the HTML Webpack Plugin
 Enhances [html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin)
 functionality by adding the `{inlineSource: 'regex string'}` option.
 
-This is an extension plugin for the [webpack](http://webpack.github.io) plugin [html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin) - a plugin that simplifies the creation of HTML files to serve your webpack bundles.
+This is an extension plugin for the [webpack](http://webpack.github.io) plugin [html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin).  It allows you to embed javascript and css source inline.
 
 Installation
 ------------
