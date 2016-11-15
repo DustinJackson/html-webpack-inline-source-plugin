@@ -45,11 +45,11 @@ HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, reg
 };
 
 HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag) {
-  var asset;
+  var assetPath;
 
   // inline js
   if (tag.tagName === 'script' && regex.test(tag.attributes.src)) {
-    asset = tag.attributes.src.split('/').pop();
+    assetPath = tag.attributes.src;
     tag = {
       tagName: 'script',
       closeTag: true,
@@ -60,7 +60,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
 
   // inline css
   } else if (tag.tagName === 'link' && regex.test(tag.attributes.href)) {
-    asset = tag.attributes.href.split('/').pop();
+    assetPath = tag.attributes.href;
     tag = {
       tagName: 'style',
       closeTag: true,
@@ -70,8 +70,15 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
     };
   }
 
-  if (asset) {
-    tag.innerHTML = compilation.assets[asset].source();
+  if (assetPath) {
+    var asset = compilation.assets[assetPath.split('/').pop()];
+
+    // Look up full path if partial path not found
+    if (!asset) {
+      asset = compilation.assets[assetPath];
+    }
+
+    tag.innerHTML = asset.source();
   }
 
   return tag;
