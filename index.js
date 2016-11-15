@@ -19,12 +19,8 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
       var regexStr = htmlPluginData.plugin.options.inlineSource;
 
       var result = self.processTags(compilation, regexStr, htmlPluginData);
-      // result is { head: head, body: body }, but callback(result) throws error...
 
-      htmlPluginData.head = result.head;
-      htmlPluginData.body = result.body;
-
-      callback(null);
+      callback(null, result);
     });
   });
 };
