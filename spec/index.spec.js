@@ -46,11 +46,18 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
     webpack({
       entry: path.join(__dirname, 'fixtures', 'entry.js'),
       output: {
+        // filename with directory tests sourcemap URL correction
+        filename: 'bin/app.js',
+        // public path required to test sourcemap URL correction, but also for this bug work-around:
+        // https://github.com/webpack/webpack/issues/3242#issuecomment-260411104
+        publicPath: '/assets',
         path: OUTPUT_DIR
       },
       module: {
         loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
       },
+      // generate sourcemaps for testing URL correction
+      devtool: '#source-map',
       plugins: [
         new ExtractTextPlugin('style.css'),
         new HtmlWebpackPlugin({
@@ -65,7 +72,9 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         expect(er).toBeFalsy();
         var $ = cheerio.load(data);
         expect($('script').html()).toContain('.embedded.source');
+        expect($('script').html()).toContain('//# sourceMappingURL=/assets/bin/app.js.map');
         expect($('style').html()).toContain('.embedded.source');
+        expect($('style').html()).toContain('/*# sourceMappingURL=/assets/style.css.map');
         done();
       });
     });

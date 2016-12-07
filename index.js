@@ -1,5 +1,9 @@
 'use strict';
 var assert = require('assert');
+var escapeRegex = require('escape-string-regexp');
+var path = require('path');
+var slash = require('slash');
+var sourceMapUrl = require('source-map-url');
 
 function HtmlWebpackInlineSourcePlugin (options) {
   assert.equal(options, undefined, 'The HtmlWebpackInlineSourcePlugin does not accept any options');
@@ -44,12 +48,40 @@ HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, reg
   return { head: head, body: body };
 };
 
+HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilation, assetName, asset) {
+  var source = asset.source();
+  var out = compilation.outputOptions;
+  // Get asset file absolute path
+  var assetPath = path.join(out.path, assetName);
+  // Extract original sourcemap URL from source string
+  var mapUrlOriginal = sourceMapUrl.getFrom(source);
+  // Return unmodified source if map is unspecified, URL-encoded, or already relative to site root
+  if (!mapUrlOriginal || mapUrlOriginal.indexOf('data:') === 0 || mapUrlOriginal.indexOf('/') === 0) {
+    return source;
+  }
+  // Figure out sourcemap file path *relative to the asset file path*
+  var assetDir = path.dirname(assetPath);
+  var mapPath = path.join(assetDir, mapUrlOriginal);
+  var mapPathRelative = path.relative(out.path, mapPath);
+  // Starting with Node 6, `path` module throws on `undefined`
+  var publicPath = out.publicPath || '';
+  // Prepend Webpack public URL path to source map relative path
+  // Calling `slash` converts Windows backslashes to forward slashes
+  var mapUrlCorrected = slash(path.join(publicPath, mapPathRelative));
+  // Regex: exact original sourcemap URL, possibly '*/' (for CSS), then EOF, ignoring whitespace
+  var regex = new RegExp(escapeRegex(mapUrlOriginal) + '(\\s*(?:\\*/)?\\s*$)');
+  // Replace sourcemap URL and (if necessary) preserve closing '*/' and whitespace
+  return source.replace(regex, function (match, group) {
+    return mapUrlCorrected + group;
+  });
+};
+
 HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag) {
-  var assetPath;
+  var assetUrl;
 
   // inline js
   if (tag.tagName === 'script' && regex.test(tag.attributes.src)) {
-    assetPath = tag.attributes.src;
+    assetUrl = tag.attributes.src;
     tag = {
       tagName: 'script',
       closeTag: true,
@@ -60,7 +92,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
 
   // inline css
   } else if (tag.tagName === 'link' && regex.test(tag.attributes.href)) {
-    assetPath = tag.attributes.href;
+    assetUrl = tag.attributes.href;
     tag = {
       tagName: 'style',
       closeTag: true,
@@ -70,15 +102,13 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
     };
   }
 
-  if (assetPath) {
-    var asset = compilation.assets[assetPath.split('/').pop()];
-
-    // Look up full path if partial path not found
-    if (!asset) {
-      asset = compilation.assets[assetPath];
-    }
-
-    tag.innerHTML = asset.source();
+  if (assetUrl) {
+    // Strip public URL prefix from asset URL to get Webpack asset name
+    var publicUrlPrefix = compilation.outputOptions.publicPath;
+    var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
+    var asset = compilation.assets[assetName];
+    var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
+    tag.innerHTML = updatedSource;
   }
 
   return tag;
