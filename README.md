@@ -46,4 +46,11 @@ plugins: [
 
 Sourcemaps
 ----------
-If any source files contain a sourceMappingURL directive that isn't a data URI, then the sourcemap URL is corrected to be relative to the domain root (unless it already is) instead of the original source file.
+If any source files contain a sourceMappingURL directive that isn't a data URI, then the sourcemap URL is corrected to be relative to the domain root (unless it already is) instead of to the original source file.
+
+All sourcemap comment styles are supported:
+
+* `//# ...`
+* `//@ ...`
+* `/*# ...*/`
+* `/*@ ...*/`
