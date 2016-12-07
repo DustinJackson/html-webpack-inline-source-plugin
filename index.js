@@ -63,9 +63,11 @@ HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilatio
   var assetDir = path.dirname(assetPath);
   var mapPath = path.join(assetDir, mapUrlOriginal);
   var mapPathRelative = path.relative(out.path, mapPath);
+  // Starting with Node 6, `path` module throws on `undefined`
+  var publicPath = out.publicPath || '';
   // Prepend Webpack public URL path to source map relative path
   // Calling `slash` converts Windows backslashes to forward slashes
-  var mapUrlCorrected = slash(path.join(out.publicPath, mapPathRelative));
+  var mapUrlCorrected = slash(path.join(publicPath, mapPathRelative));
   // Regex: exact original sourcemap URL, possibly '*/' (for CSS), then EOF, ignoring whitespace
   var regex = new RegExp(escapeRegex(mapUrlOriginal) + '(\\s*(?:\\*/)?\\s*$)');
   // Replace sourcemap URL and (if necessary) preserve closing '*/' and whitespace
