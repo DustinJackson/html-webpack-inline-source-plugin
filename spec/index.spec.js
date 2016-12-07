@@ -31,7 +31,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
       ]
     }, function (err) {
       expect(err).toBeFalsy();
-      var htmlFile = path.resolve(__dirname, '../dist/index.html');
+      var htmlFile = path.resolve(OUTPUT_DIR, 'index.html');
       fs.readFile(htmlFile, 'utf8', function (er, data) {
         expect(er).toBeFalsy();
         var $ = cheerio.load(data);
@@ -67,7 +67,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
       ]
     }, function (err) {
       expect(err).toBeFalsy();
-      var htmlFile = path.resolve(__dirname, '../dist/index.html');
+      var htmlFile = path.resolve(OUTPUT_DIR, 'index.html');
       fs.readFile(htmlFile, 'utf8', function (er, data) {
         expect(er).toBeFalsy();
         var $ = cheerio.load(data);
