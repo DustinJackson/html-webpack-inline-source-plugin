@@ -103,7 +103,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
   }
 
   if (assetUrl) {
-    // Strip hash (i.e. for cache busting) from URL
+    // Strip query string (e.g. cache busting hash) from asset URL
     assetUrl = assetUrl.replace(/\?.*$/, '');
     // Strip public URL prefix from asset URL to get Webpack asset name
     var publicUrlPrefix = compilation.outputOptions.publicPath;
