@@ -106,7 +106,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
     // Strip query string (e.g. cache busting hash) from asset URL
     assetUrl = assetUrl.replace(/\?.*$/, '');
     // Strip public URL prefix from asset URL to get Webpack asset name
-    var publicUrlPrefix = compilation.outputOptions.publicPath;
+    var publicUrlPrefix = compilation.outputOptions.publicPath || '';
     var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
     var asset = compilation.assets[assetName];
     var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
