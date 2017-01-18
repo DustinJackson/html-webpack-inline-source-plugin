@@ -20,16 +20,16 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
         return callback(null);
       }
 
-      var regexStr = htmlPluginData.plugin.options.inlineSource;
-
-      var result = self.processTags(compilation, regexStr, htmlPluginData);
+      var regexStr = htmlPluginData.plugin.options.inlineSource,
+          inject = htmlPluginData.plugin.options.inlineInject,
+          result = self.processTags(compilation, regexStr, inject, htmlPluginData);
 
       callback(null, result);
     });
   });
 };
 
-HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, regexStr, pluginData) {
+HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, regexStr, inject, pluginData) {
   var self = this;
 
   var body = [];
@@ -38,11 +38,19 @@ HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, reg
   var regex = new RegExp(regexStr);
 
   pluginData.head.forEach(function (tag) {
-    head.push(self.processTag(compilation, regex, tag));
+    if (inject === 'body' && self.tagRegexMatch(tag, regex)) {
+      body.push(self.processTag(compilation, regex, tag));
+    } else {
+      head.push(self.processTag(compilation, regex, tag));
+    }
   });
 
   pluginData.body.forEach(function (tag) {
-    body.push(self.processTag(compilation, regex, tag));
+    if (inject === 'head' && self.tagRegexMatch(tag, regex)) {
+      head.push(self.processTag(compilation, regex, tag));
+    } else {
+      body.push(self.processTag(compilation, regex, tag));
+    }
   });
 
   return { head: head, body: body };
@@ -76,11 +84,23 @@ HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilatio
   });
 };
 
+HtmlWebpackInlineSourcePlugin.prototype.tagRegexMatch = function (tag, regex) {
+  return this.scriptTagRegexMatch(tag, regex) || this.linkTagRegexMatch(tag, regex);
+}
+
+HtmlWebpackInlineSourcePlugin.prototype.linkTagRegexMatch = function (tag, regex) {
+  return (tag.tagName === 'link' && regex.test(tag.attributes.href));
+}
+
+HtmlWebpackInlineSourcePlugin.prototype.scriptTagRegexMatch = function (tag, regex) {
+  return (tag.tagName === 'script' && regex.test(tag.attributes.src));
+}
+
 HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag) {
   var assetUrl;
 
   // inline js
-  if (tag.tagName === 'script' && regex.test(tag.attributes.src)) {
+  if (this.scriptTagRegexMatch(tag, regex)) {
     assetUrl = tag.attributes.src;
     tag = {
       tagName: 'script',
@@ -91,7 +111,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
     };
 
   // inline css
-  } else if (tag.tagName === 'link' && regex.test(tag.attributes.href)) {
+  } else if (this.linkTagRegexMatch(tag, regex)) {
     assetUrl = tag.attributes.href;
     tag = {
       tagName: 'style',
