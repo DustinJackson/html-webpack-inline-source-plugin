@@ -17,7 +17,7 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
     compilation.plugin('html-webpack-plugin-alter-asset-tags', function (htmlPluginData, callback) {
       // Skip if the plugin configuration didn't set `inlineSource`
       if (!htmlPluginData.plugin.options.inlineSource) {
-        return callback(null);
+        return callback(null, htmlPluginData);
       }
 
       var regexStr = htmlPluginData.plugin.options.inlineSource;
@@ -45,7 +45,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, reg
     body.push(self.processTag(compilation, regex, tag));
   });
 
-  return { head: head, body: body };
+  return { head: head, body: body, plugin: pluginData.plugin, chunks: pluginData.chunks, outputName: pluginData.outputName };
 };
 
 HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilation, assetName, asset) {
