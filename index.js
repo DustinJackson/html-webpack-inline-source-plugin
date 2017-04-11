@@ -54,6 +54,9 @@ HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilatio
   // Get asset file absolute path
   var assetPath = path.join(out.path, assetName);
   // Extract original sourcemap URL from source string
+  if (typeof source !== 'string') {
+    source = source.toString();
+  }
   var mapUrlOriginal = sourceMapUrl.getFrom(source);
   // Return unmodified source if map is unspecified, URL-encoded, or already relative to site root
   if (!mapUrlOriginal || mapUrlOriginal.indexOf('data:') === 0 || mapUrlOriginal.indexOf('/') === 0) {
