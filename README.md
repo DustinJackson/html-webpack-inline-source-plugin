@@ -9,7 +9,7 @@ This is an extension plugin for the [webpack](http://webpack.github.io) plugin [
 
 Installation
 ------------
-You must be running webpack on node 0.12.x or higher
+You must be running webpack on node 4 or higher
 
 Install the plugin with npm:
 ```shell
