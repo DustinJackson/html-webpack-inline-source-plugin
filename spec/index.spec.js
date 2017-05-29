@@ -80,6 +80,38 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
     });
   });
 
+  it('should embed sources inline even if a query string hash is used', function (done) {
+    webpack({
+      entry: path.join(__dirname, 'fixtures', 'entry.js'),
+      output: {
+        // filename with output hash
+        filename: 'app.js?[hash]',
+        path: OUTPUT_DIR
+      },
+      module: {
+        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+      },
+      plugins: [
+        new ExtractTextPlugin('style.css?[hash]'),
+        new HtmlWebpackPlugin({
+          // modified regex to accept query string
+          inlineSource: '.(js|css)(\\?.*)?$'
+        }),
+        new HtmlWebpackInlineSourcePlugin()
+      ]
+    }, function (err) {
+      expect(err).toBeFalsy();
+      var htmlFile = path.resolve(OUTPUT_DIR, 'index.html');
+      fs.readFile(htmlFile, 'utf8', function (er, data) {
+        expect(er).toBeFalsy();
+        var $ = cheerio.load(data);
+        expect($('script').html()).toContain('.embedded.source');
+        expect($('style').html()).toContain('.embedded.source');
+        done();
+      });
+    });
+  });
+
   it('should embed source and not error if public path is undefined', function (done) {
     webpack({
       entry: path.join(__dirname, 'fixtures', 'entry.js'),
