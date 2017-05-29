@@ -111,7 +111,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
     var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
     var asset = compilation.assets[assetName];
     var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
-    tag.innerHTML = updatedSource;
+    tag.innerHTML = (tag.tagName === 'script') ? updatedSource.replace(/(<)(\/script>)/g, '\\x3C$2') : updatedSource;
   }
 
   return tag;
