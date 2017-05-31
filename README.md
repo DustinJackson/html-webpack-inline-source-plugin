@@ -34,12 +34,25 @@ plugins: [
 ```
 The above configuration will actually do nothing due to the configuration defaults.
 
+Configuration
+-----------
 When you set `inlineSource` to a regular expression the source code for any javascript or css file names that match will be embedded inline in the resulting html document.
 ```javascript
 plugins: [
   new HtmlWebpackPlugin({
-		inlineSource: '.(js|css)$' // embed all javascript and css inline
-	}),
+    inlineSource: '.(js|css)$' // embed all javascript and css inline
+  }),
+  new HtmlWebpackInlineSourcePlugin()
+]  
+```
+
+You can optionally set `inlineInject` to either `'body'` or `'head'` to force attachment of the files selected by `inlineSource` regex into the body or head respectively.
+```javascript
+plugins: [
+  new HtmlWebpackPlugin({
+    inlineSource: '.(js|css)$',
+    inlineInject: 'head' // will override inject for inline files
+  }),
   new HtmlWebpackInlineSourcePlugin()
 ]  
 ```
