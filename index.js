@@ -42,7 +42,12 @@ HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, reg
   });
 
   pluginData.body.forEach(function (tag) {
-    body.push(self.processTag(compilation, regex, tag));
+    var sourceName = tag.attributes.src.split('/').reverse()[0] || '';
+    if (sourceName && regex.test(sourceName)) {
+      head.push(self.processTag(compilation, regex, tag));
+    }else {
+      body.push(self.processTag(compilation, regex, tag));      
+    }
   });
 
   return { head: head, body: body, plugin: pluginData.plugin, chunks: pluginData.chunks, outputName: pluginData.outputName };
