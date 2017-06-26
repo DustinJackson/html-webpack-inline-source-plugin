@@ -4,6 +4,7 @@ var escapeRegex = require('escape-string-regexp');
 var path = require('path');
 var slash = require('slash');
 var sourceMapUrl = require('source-map-url');
+var url = require('url');
 
 function HtmlWebpackInlineSourcePlugin (options) {
   assert.equal(options, undefined, 'The HtmlWebpackInlineSourcePlugin does not accept any options');
@@ -106,9 +107,12 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
   }
 
   if (assetUrl) {
+    var parsedUrl = url.parse(assetUrl);
+    var pathname = parsedUrl.pathname;
+
     // Strip public URL prefix from asset URL to get Webpack asset name
     var publicUrlPrefix = compilation.outputOptions.publicPath || '';
-    var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
+    var assetName = path.posix.relative(publicUrlPrefix, pathname);
     var asset = compilation.assets[assetName];
     var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
     tag.innerHTML = (tag.tagName === 'script') ? updatedSource.replace(/(<)(\/script>)/g, '\\x3C$2') : updatedSource;
