@@ -109,12 +109,23 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
     // Strip public URL prefix from asset URL to get Webpack asset name
     var publicUrlPrefix = compilation.outputOptions.publicPath || '';
     var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
-    var asset = compilation.assets[assetName];
+    var asset = getAssetByName(compilation.assets, assetName);
     var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
     tag.innerHTML = (tag.tagName === 'script') ? updatedSource.replace(/(<)(\/script>)/g, '\\x3C$2') : updatedSource;
   }
 
   return tag;
 };
+
+function getAssetByName(assests, assetName) {
+  for (var key in assests) {
+    if (assests.hasOwnProperty(key)) {
+      var processedKey = path.posix.relative('', key);
+      if (processedKey === assetName) {
+          return assests[key];
+      }
+    }
+  }
+}
 
 module.exports = HtmlWebpackInlineSourcePlugin;
