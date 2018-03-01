@@ -14,17 +14,17 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
 
   // Hook into the html-webpack-plugin processing
   compiler.plugin('compilation', function (compilation) {
-    compilation.plugin('html-webpack-plugin-alter-asset-tags', function (htmlPluginData, callback) {
+    compilation.plugin('html-webpack-plugin-alter-asset-tags', function (htmlPluginData) {
       // Skip if the plugin configuration didn't set `inlineSource`
       if (!htmlPluginData.plugin.options.inlineSource) {
-        return callback(null, htmlPluginData);
+        return htmlPluginData;
       }
 
       var regexStr = htmlPluginData.plugin.options.inlineSource;
 
       var result = self.processTags(compilation, regexStr, htmlPluginData);
 
-      callback(null, result);
+      return result;
     });
   });
 };
