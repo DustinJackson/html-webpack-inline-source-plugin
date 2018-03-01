@@ -13,8 +13,8 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
   var self = this;
 
   // Hook into the html-webpack-plugin processing
-  compiler.plugin('compilation', function (compilation) {
-    compilation.plugin('html-webpack-plugin-alter-asset-tags', function (htmlPluginData, callback) {
+  compiler.hooks.compilation.tap('html-webpack-inline-source-plugin', function (compilation) {
+    compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync('html-webpack-inline-source-plugin', function (htmlPluginData, callback) {
       // Skip if the plugin configuration didn't set `inlineSource`
       if (!htmlPluginData.plugin.options.inlineSource) {
         return callback(null, htmlPluginData);
