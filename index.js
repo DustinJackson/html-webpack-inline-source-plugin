@@ -13,20 +13,27 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
   var self = this;
 
   // Hook into the html-webpack-plugin processing
-  compiler.plugin('compilation', function (compilation) {
-    compilation.plugin('html-webpack-plugin-alter-asset-tags', function (htmlPluginData, callback) {
-      // Skip if the plugin configuration didn't set `inlineSource`
-      if (!htmlPluginData.plugin.options.inlineSource) {
-        return callback(null, htmlPluginData);
-      }
 
-      var regexStr = htmlPluginData.plugin.options.inlineSource;
+  (compiler.hooks
+    ? compiler.hooks.compilation.tap.bind(compiler.hooks.compilation, 'html-webpack-inline-source-plugin')
+    : compiler.plugin.bind(compiler, 'compilation'))(function (compilation) {
 
-      var result = self.processTags(compilation, regexStr, htmlPluginData);
+      (compilation.hooks
+        ? compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync.bind(compilation.hooks.htmlWebpackPluginAlterAssetTags, 'html-webpack-inline-source-plugin')
+        : compilation.plugin.bind(compilation, 'html-webpack-plugin-alter-asset-tags'))(function (htmlPluginData, callback) {
+          if (!htmlPluginData.plugin.options.inlineSource) {
+            return callback(null, htmlPluginData);
+          }
 
-      callback(null, result);
+          var regexStr = htmlPluginData.plugin.options.inlineSource;
+
+          var result = self.processTags(compilation, regexStr, htmlPluginData);
+
+          callback(null, result);
+        });
+
     });
-  });
+
 };
 
 HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, regexStr, pluginData) {
