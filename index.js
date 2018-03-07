@@ -17,20 +17,20 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
   (compiler.hooks
     ? compiler.hooks.compilation.tap.bind(compiler.hooks.compilation, 'html-webpack-inline-source-plugin')
     : compiler.plugin.bind(compiler, 'compilation'))(function (compilation) {
-    (compilation.hooks
+      (compilation.hooks
       ? compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync.bind(compilation.hooks.htmlWebpackPluginAlterAssetTags, 'html-webpack-inline-source-plugin')
       : compilation.plugin.bind(compilation, 'html-webpack-plugin-alter-asset-tags'))(function (htmlPluginData, callback) {
-      if (!htmlPluginData.plugin.options.inlineSource) {
-        return callback(null, htmlPluginData);
-      }
+        if (!htmlPluginData.plugin.options.inlineSource) {
+          return callback(null, htmlPluginData);
+        }
 
-      var regexStr = htmlPluginData.plugin.options.inlineSource;
+        var regexStr = htmlPluginData.plugin.options.inlineSource;
 
-      var result = self.processTags(compilation, regexStr, htmlPluginData);
+        var result = self.processTags(compilation, regexStr, htmlPluginData);
 
-      callback(null, result);
+        callback(null, result);
+      });
     });
-  });
 };
 
 HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, regexStr, pluginData) {
