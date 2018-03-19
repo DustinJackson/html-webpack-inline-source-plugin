@@ -117,12 +117,12 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
   return tag;
 };
 
-function getAssetByName(assests, assetName) {
+function getAssetByName (assests, assetName) {
   for (var key in assests) {
     if (assests.hasOwnProperty(key)) {
       var processedKey = path.posix.relative('', key);
       if (processedKey === assetName) {
-          return assests[key];
+        return assests[key];
       }
     }
   }
