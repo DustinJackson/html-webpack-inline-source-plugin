@@ -23,8 +23,11 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
         if (!htmlPluginData.plugin.options.inlineSource) {
           return callback(null, htmlPluginData);
         }
-
-        var regexStr = htmlPluginData.plugin.options.inlineSource;
+        var regexStrs = [];
+        if (!Array.isArray(htmlPluginData.plugin.options.inlineSource)) {
+          regexStrs = [htmlPluginData.plugin.options.inlineSource];
+        }
+        var regexStr = '(' + regexStrs.join('|') + ')';
 
         var result = self.processTags(compilation, regexStr, htmlPluginData);
 
