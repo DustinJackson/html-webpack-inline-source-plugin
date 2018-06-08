@@ -87,7 +87,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
   var assetUrl;
 
   // inline js
-  if (tag.tagName === 'script' && regex.test(tag.attributes.src)) {
+  if (tag.tagName === 'script' && tag.attributes && regex.test(tag.attributes.src)) {
     assetUrl = tag.attributes.src;
     tag = {
       tagName: 'script',
