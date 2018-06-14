@@ -1,6 +1,6 @@
 {
   "name": "html-webpack-inline-source-plugin",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Embed javascript and css source inline when using the webpack dev server or middleware",
   "main": "index.js",
   "files": [
