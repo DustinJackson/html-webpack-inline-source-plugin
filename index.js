@@ -40,13 +40,14 @@ HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, reg
   var head = [];
 
   var regex = new RegExp(regexStr);
+  var filename = pluginData.plugin.options.filename;
 
   pluginData.head.forEach(function (tag) {
-    head.push(self.processTag(compilation, regex, tag));
+    head.push(self.processTag(compilation, regex, tag, filename));
   });
 
   pluginData.body.forEach(function (tag) {
-    body.push(self.processTag(compilation, regex, tag));
+    body.push(self.processTag(compilation, regex, tag, filename));
   });
 
   return { head: head, body: body, plugin: pluginData.plugin, chunks: pluginData.chunks, outputName: pluginData.outputName };
@@ -83,7 +84,7 @@ HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilatio
   });
 };
 
-HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag) {
+HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag, filename) {
   var assetUrl;
 
   // inline js
@@ -112,6 +113,10 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
   if (assetUrl) {
     // Strip public URL prefix from asset URL to get Webpack asset name
     var publicUrlPrefix = compilation.outputOptions.publicPath || '';
+    // if filename is in subfolder, assetUrl should be prepended folder path
+    if (path.basename(filename) !== filename) {
+      assetUrl = path.dirname(filename) + '/' + assetUrl;
+    }
     var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
     var asset = getAssetByName(compilation.assets, assetName);
     var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
