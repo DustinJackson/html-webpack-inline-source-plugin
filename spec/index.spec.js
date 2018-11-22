@@ -27,7 +27,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
       plugins: [
         new ExtractTextPlugin('style.css'),
         new HtmlWebpackPlugin(),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();
@@ -63,7 +63,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         new HtmlWebpackPlugin({
           inlineSource: '.(js|css)$'
         }),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();
@@ -97,7 +97,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
           // modified regex to accept query string
           inlineSource: '.(js|css)(\\?.*)?$'
         }),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();
@@ -127,7 +127,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         new HtmlWebpackPlugin({
           inlineSource: '.(js|css)$'
         }),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();
@@ -158,7 +158,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
           filename: 'subfolder/index.html',
           inlineSource: '.(js|css)$'
         }),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();
