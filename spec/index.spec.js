@@ -22,7 +22,10 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       plugins: [
         new ExtractTextPlugin('style.css'),
@@ -54,7 +57,10 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       // generate sourcemaps for testing URL correction
       devtool: '#source-map',
@@ -89,7 +95,10 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       plugins: [
         new ExtractTextPlugin('style.css?[hash]'),
@@ -120,7 +129,10 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       plugins: [
         new ExtractTextPlugin('style.css'),
@@ -150,7 +162,10 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       plugins: [
         new ExtractTextPlugin('style.css'),
