@@ -1,5 +1,4 @@
 'use strict';
-var assert = require('assert');
 var escapeRegex = require('escape-string-regexp');
 var path = require('path');
 var slash = require('slash');
@@ -7,7 +6,6 @@ var sourceMapUrl = require('source-map-url');
 
 function HtmlWebpackInlineSourcePlugin (htmlWebpackPlugin, options) {
   this.htmlWebpackPlugin = htmlWebpackPlugin;
-  assert.equal(options, undefined, 'The HtmlWebpackInlineSourcePlugin does not accept any options');
 }
 
 HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
@@ -81,11 +79,11 @@ HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilatio
   });
 };
 
-HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag) {
+HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag, filename) {
   var assetUrl;
 
   // inline js
-  if (tag.tagName === 'script' && regex.test(tag.attributes.src)) {
+  if (tag.tagName === 'script' && tag.attributes && regex.test(tag.attributes.src)) {
     assetUrl = tag.attributes.src;
     tag = {
       tagName: 'script',
@@ -110,13 +108,28 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
   if (assetUrl) {
     // Strip public URL prefix from asset URL to get Webpack asset name
     var publicUrlPrefix = compilation.outputOptions.publicPath || '';
+    // if filename is in subfolder, assetUrl should be prepended folder path
+    if (path.basename(filename) !== filename) {
+      assetUrl = path.dirname(filename) + '/' + assetUrl;
+    }
     var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
-    var asset = compilation.assets[assetName];
+    var asset = getAssetByName(compilation.assets, assetName);
     var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
     tag.innerHTML = (tag.tagName === 'script') ? updatedSource.replace(/(<)(\/script>)/g, '\\x3C$2') : updatedSource;
   }
 
   return tag;
 };
+
+function getAssetByName (assests, assetName) {
+  for (var key in assests) {
+    if (assests.hasOwnProperty(key)) {
+      var processedKey = path.posix.relative('', key);
+      if (processedKey === assetName) {
+        return assests[key];
+      }
+    }
+  }
+}
 
 module.exports = HtmlWebpackInlineSourcePlugin;
