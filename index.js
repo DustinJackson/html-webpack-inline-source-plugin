@@ -4,7 +4,7 @@ var path = require('path');
 var slash = require('slash');
 var sourceMapUrl = require('source-map-url');
 
-function HtmlWebpackInlineSourcePlugin (htmlWebpackPlugin, options) {
+function HtmlWebpackInlineSourcePlugin (htmlWebpackPlugin) {
   this.htmlWebpackPlugin = htmlWebpackPlugin;
 }
 
