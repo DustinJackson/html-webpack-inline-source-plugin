@@ -25,8 +25,8 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
         var result = self.processTags(compilation, regexStr, htmlPluginData);
 
         callback(null, result);
-      })
-  })
+      });
+  });
 };
 
 HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, regexStr, pluginData) {
