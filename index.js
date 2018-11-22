@@ -5,7 +5,8 @@ var path = require('path');
 var slash = require('slash');
 var sourceMapUrl = require('source-map-url');
 
-function HtmlWebpackInlineSourcePlugin (options) {
+function HtmlWebpackInlineSourcePlugin (htmlWebpackPlugin, options) {
+  this.htmlWebpackPlugin = htmlWebpackPlugin;
   assert.equal(options, undefined, 'The HtmlWebpackInlineSourcePlugin does not accept any options');
 }
 
@@ -13,13 +14,10 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
   var self = this;
 
   // Hook into the html-webpack-plugin processing
-
-  (compiler.hooks
-    ? compiler.hooks.compilation.tap.bind(compiler.hooks.compilation, 'html-webpack-inline-source-plugin')
-    : compiler.plugin.bind(compiler, 'compilation'))(function (compilation) {
-      (compilation.hooks
-      ? compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync.bind(compilation.hooks.htmlWebpackPluginAlterAssetTags, 'html-webpack-inline-source-plugin')
-      : compilation.plugin.bind(compilation, 'html-webpack-plugin-alter-asset-tags'))(function (htmlPluginData, callback) {
+  compiler.hooks.compilation.tap('html-webpack-inline-source-plugin', compilation => {
+    self.htmlWebpackPlugin
+      .getHooks(compilation)
+      .alterAssetTagGroups.tapAsync('html-webpack-inline-source-plugin', (htmlPluginData, callback) => {
         if (!htmlPluginData.plugin.options.inlineSource) {
           return callback(null, htmlPluginData);
         }
@@ -29,28 +27,27 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
         var result = self.processTags(compilation, regexStr, htmlPluginData);
 
         callback(null, result);
-      });
-    });
+      })
+  })
 };
 
 HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, regexStr, pluginData) {
   var self = this;
 
-  var body = [];
-  var head = [];
+  var bodyTags = [];
+  var headTags = [];
 
   var regex = new RegExp(regexStr);
-  var filename = pluginData.plugin.options.filename;
 
-  pluginData.head.forEach(function (tag) {
-    head.push(self.processTag(compilation, regex, tag, filename));
+  pluginData.headTags.forEach(function (tag) {
+    headTags.push(self.processTag(compilation, regex, tag));
   });
 
-  pluginData.body.forEach(function (tag) {
-    body.push(self.processTag(compilation, regex, tag, filename));
+  pluginData.bodyTags.forEach(function (tag) {
+    bodyTags.push(self.processTag(compilation, regex, tag));
   });
 
-  return { head: head, body: body, plugin: pluginData.plugin, chunks: pluginData.chunks, outputName: pluginData.outputName };
+  return { headTags: headTags, bodyTags: bodyTags, plugin: pluginData.plugin, outputName: pluginData.outputName };
 };
 
 HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilation, assetName, asset) {
@@ -84,11 +81,11 @@ HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilatio
   });
 };
 
-HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag, filename) {
+HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag) {
   var assetUrl;
 
   // inline js
-  if (tag.tagName === 'script' && tag.attributes && regex.test(tag.attributes.src)) {
+  if (tag.tagName === 'script' && regex.test(tag.attributes.src)) {
     assetUrl = tag.attributes.src;
     tag = {
       tagName: 'script',
@@ -113,28 +110,13 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
   if (assetUrl) {
     // Strip public URL prefix from asset URL to get Webpack asset name
     var publicUrlPrefix = compilation.outputOptions.publicPath || '';
-    // if filename is in subfolder, assetUrl should be prepended folder path
-    if (path.basename(filename) !== filename) {
-      assetUrl = path.dirname(filename) + '/' + assetUrl;
-    }
     var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
-    var asset = getAssetByName(compilation.assets, assetName);
+    var asset = compilation.assets[assetName];
     var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
     tag.innerHTML = (tag.tagName === 'script') ? updatedSource.replace(/(<)(\/script>)/g, '\\x3C$2') : updatedSource;
   }
 
   return tag;
 };
-
-function getAssetByName (assests, assetName) {
-  for (var key in assests) {
-    if (assests.hasOwnProperty(key)) {
-      var processedKey = path.posix.relative('', key);
-      if (processedKey === assetName) {
-        return assests[key];
-      }
-    }
-  }
-}
 
 module.exports = HtmlWebpackInlineSourcePlugin;
