@@ -40,7 +40,7 @@ plugins: [
   new HtmlWebpackPlugin({
 		inlineSource: '.(js|css)$' // embed all javascript and css inline
 	}),
-  new HtmlWebpackInlineSourcePlugin()
+  new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
 ]  
 ```
 
