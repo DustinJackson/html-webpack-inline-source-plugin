@@ -39,7 +39,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         expect(er).toBeFalsy();
         var $ = cheerio.load(data);
         expect($('script[src="bundle.js"]').html()).toBeNull();
-        expect($('link[href="style.css"]').html()).toBeNull();
+        expect($('link[href="style.css"]').html()).toBe('');
         done();
       });
     });
