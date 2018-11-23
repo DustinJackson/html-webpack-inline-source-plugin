@@ -38,8 +38,8 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
       fs.readFile(htmlFile, 'utf8', function (er, data) {
         expect(er).toBeFalsy();
         var $ = cheerio.load(data);
-        expect($('script[src="bundle.js"]').html()).toBe('');
-        expect($('link[href="style.css"]').html()).toBe('');
+        expect($('script[src="bundle.js"]').html()).toBeNull();
+        expect($('link[href="style.css"]').html()).toBeNull();
         done();
       });
     });
