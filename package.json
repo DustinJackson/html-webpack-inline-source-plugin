@@ -34,13 +34,13 @@
   "devDependencies": {
     "cheerio": "^0.22.0",
     "css-loader": "^0.25.0",
-    "extract-text-webpack-plugin": "^1.0.1",
-    "html-webpack-plugin": "^2.16.0",
+    "extract-text-webpack-plugin": "^4.0.0-beta.0",
+    "html-webpack-plugin": "^4.0.0-beta.4",
     "jasmine": "^2.4.1",
     "rimraf": "^2.5.2",
     "semistandard": "^7.0.5",
     "style-loader": "^0.13.1",
-    "webpack": "^1.13.0"
+    "webpack": "^4.20.2"
   },
   "dependencies": {
     "escape-string-regexp": "^1.0.5",

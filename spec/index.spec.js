@@ -22,12 +22,15 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       plugins: [
         new ExtractTextPlugin('style.css'),
         new HtmlWebpackPlugin(),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();
@@ -35,7 +38,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
       fs.readFile(htmlFile, 'utf8', function (er, data) {
         expect(er).toBeFalsy();
         var $ = cheerio.load(data);
-        expect($('script[src="bundle.js"]').html()).toBe('');
+        expect($('script[src="bundle.js"]').html()).toBeNull();
         expect($('link[href="style.css"]').html()).toBe('');
         done();
       });
@@ -54,7 +57,10 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       // generate sourcemaps for testing URL correction
       devtool: '#source-map',
@@ -63,7 +69,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         new HtmlWebpackPlugin({
           inlineSource: '.(js|css)$'
         }),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();
@@ -89,7 +95,10 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       plugins: [
         new ExtractTextPlugin('style.css?[hash]'),
@@ -97,7 +106,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
           // modified regex to accept query string
           inlineSource: '.(js|css)(\\?.*)?$'
         }),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();
@@ -120,14 +129,17 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       plugins: [
         new ExtractTextPlugin('style.css'),
         new HtmlWebpackPlugin({
           inlineSource: '.(js|css)$'
         }),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();
@@ -150,7 +162,10 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
         path: OUTPUT_DIR
       },
       module: {
-        loaders: [{ test: /\.css$/, loader: ExtractTextPlugin.extract('style-loader', 'css-loader') }]
+        rules: [{ test: /\.css$/, use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: 'css-loader'
+        }) }]
       },
       plugins: [
         new ExtractTextPlugin('style.css'),
@@ -158,7 +173,7 @@ describe('HtmlWebpackInlineSourcePlugin', function () {
           filename: 'subfolder/index.html',
           inlineSource: '.(js|css)$'
         }),
-        new HtmlWebpackInlineSourcePlugin()
+        new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
       ]
     }, function (err) {
       expect(err).toBeFalsy();

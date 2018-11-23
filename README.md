@@ -5,11 +5,11 @@ Inline Source extension for the HTML Webpack Plugin
 Enhances [html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin)
 functionality by adding the `{inlineSource: 'regex string'}` option.
 
-This is an extension plugin for the [webpack](http://webpack.github.io) plugin [html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin).  It allows you to embed javascript and css source inline.
+This is an extension plugin for the [webpack](http://webpack.github.io) plugin [html-webpack-plugin](https://github.com/ampedandwired/html-webpack-plugin) (version 4 or higher).  It allows you to embed javascript and css source inline.
 
 Installation
 ------------
-You must be running webpack on node 4 or higher
+You must be running webpack on node 6 or higher.
 
 Install the plugin with npm:
 ```shell
@@ -29,7 +29,7 @@ Add the plugin to your webpack config as follows:
 ```javascript
 plugins: [
   new HtmlWebpackPlugin(),
-  new HtmlWebpackInlineSourcePlugin()
+  new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
 ]  
 ```
 The above configuration will actually do nothing due to the configuration defaults.
@@ -40,7 +40,7 @@ plugins: [
   new HtmlWebpackPlugin({
 		inlineSource: '.(js|css)$' // embed all javascript and css inline
 	}),
-  new HtmlWebpackInlineSourcePlugin()
+  new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
 ]  
 ```
 

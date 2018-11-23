@@ -1,25 +1,21 @@
 'use strict';
-var assert = require('assert');
 var escapeRegex = require('escape-string-regexp');
 var path = require('path');
 var slash = require('slash');
 var sourceMapUrl = require('source-map-url');
 
-function HtmlWebpackInlineSourcePlugin (options) {
-  assert.equal(options, undefined, 'The HtmlWebpackInlineSourcePlugin does not accept any options');
+function HtmlWebpackInlineSourcePlugin (htmlWebpackPlugin) {
+  this.htmlWebpackPlugin = htmlWebpackPlugin;
 }
 
 HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
   var self = this;
 
   // Hook into the html-webpack-plugin processing
-
-  (compiler.hooks
-    ? compiler.hooks.compilation.tap.bind(compiler.hooks.compilation, 'html-webpack-inline-source-plugin')
-    : compiler.plugin.bind(compiler, 'compilation'))(function (compilation) {
-      (compilation.hooks
-      ? compilation.hooks.htmlWebpackPluginAlterAssetTags.tapAsync.bind(compilation.hooks.htmlWebpackPluginAlterAssetTags, 'html-webpack-inline-source-plugin')
-      : compilation.plugin.bind(compilation, 'html-webpack-plugin-alter-asset-tags'))(function (htmlPluginData, callback) {
+  compiler.hooks.compilation.tap('html-webpack-inline-source-plugin', compilation => {
+    self.htmlWebpackPlugin
+      .getHooks(compilation)
+      .alterAssetTagGroups.tapAsync('html-webpack-inline-source-plugin', (htmlPluginData, callback) => {
         if (!htmlPluginData.plugin.options.inlineSource) {
           return callback(null, htmlPluginData);
         }
@@ -30,27 +26,27 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
 
         callback(null, result);
       });
-    });
+  });
 };
 
 HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, regexStr, pluginData) {
   var self = this;
 
-  var body = [];
-  var head = [];
+  var bodyTags = [];
+  var headTags = [];
 
   var regex = new RegExp(regexStr);
   var filename = pluginData.plugin.options.filename;
 
-  pluginData.head.forEach(function (tag) {
-    head.push(self.processTag(compilation, regex, tag, filename));
+  pluginData.headTags.forEach(function (tag) {
+    headTags.push(self.processTag(compilation, regex, tag, filename));
   });
 
-  pluginData.body.forEach(function (tag) {
-    body.push(self.processTag(compilation, regex, tag, filename));
+  pluginData.bodyTags.forEach(function (tag) {
+    bodyTags.push(self.processTag(compilation, regex, tag, filename));
   });
 
-  return { head: head, body: body, plugin: pluginData.plugin, chunks: pluginData.chunks, outputName: pluginData.outputName };
+  return { headTags: headTags, bodyTags: bodyTags, plugin: pluginData.plugin, outputName: pluginData.outputName };
 };
 
 HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilation, assetName, asset) {
