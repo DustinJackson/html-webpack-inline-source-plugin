@@ -36,13 +36,14 @@ HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, reg
   var headTags = [];
 
   var regex = new RegExp(regexStr);
+  var filename = pluginData.plugin.options.filename;
 
   pluginData.headTags.forEach(function (tag) {
-    headTags.push(self.processTag(compilation, regex, tag));
+    headTags.push(self.processTag(compilation, regex, tag, filename));
   });
 
   pluginData.bodyTags.forEach(function (tag) {
-    bodyTags.push(self.processTag(compilation, regex, tag));
+    bodyTags.push(self.processTag(compilation, regex, tag, filename));
   });
 
   return { headTags: headTags, bodyTags: bodyTags, plugin: pluginData.plugin, outputName: pluginData.outputName };
