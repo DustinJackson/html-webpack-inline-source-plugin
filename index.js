@@ -113,7 +113,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
     if (path.basename(filename) !== filename) {
       assetUrl = path.dirname(filename) + '/' + assetUrl;
     }
-    var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
+    var assetName = path.posix.relative(publicUrlPrefix, assetUrl).replace(/^(\.\.\/)+/g, '');
     var asset = getAssetByName(compilation.assets, assetName);
     var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
     tag.innerHTML = (tag.tagName === 'script') ? updatedSource.replace(/(<)(\/script>)/g, '\\x3C$2') : updatedSource;
