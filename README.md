@@ -29,7 +29,7 @@ Add the plugin to your webpack config as follows:
 ```javascript
 plugins: [
   new HtmlWebpackPlugin(),
-  new HtmlWebpackInlineSourcePlugin(HtmlWebpackPlugin)
+  new HtmlWebpackInlineSourcePlugin()
 ]  
 ```
 The above configuration will actually do nothing due to the configuration defaults.
