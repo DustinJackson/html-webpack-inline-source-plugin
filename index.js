@@ -94,7 +94,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
       closeTag: true,
       attributes: {
         type: 'text/javascript',
-        nonce: 'myNonce1234 {{789}} bbb'
+        nonce: 'myNonce1234 {{ .CSPNonce }} bbb'
       }
     };
 
