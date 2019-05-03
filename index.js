@@ -98,6 +98,9 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
       }
     };
 
+    // Add CSP nonce template string if supplied
+    tag.outerHTML = tag.outerHTML.replace(/^<script/gi, '<script xyz zyx');
+
   // inline css
   } else if (tag.tagName === 'link' && regex.test(tag.attributes.href)) {
     assetUrl = tag.attributes.href;
