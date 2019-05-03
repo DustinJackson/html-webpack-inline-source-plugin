@@ -25,15 +25,16 @@ HtmlWebpackInlineSourcePlugin.prototype.apply = function (compiler) {
         }
 
         var regexStr = htmlPluginData.plugin.options.inlineSource;
+        var nonceTemplateStr = htmlPluginData.plugin.options.nonceTemplate;
 
-        var result = self.processTags(compilation, regexStr, htmlPluginData);
+        var result = self.processTags(compilation, regexStr, htmlPluginData, nonceTemplateStr);
 
         callback(null, result);
       });
     });
 };
 
-HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, regexStr, pluginData) {
+HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, regexStr, pluginData, nonceTemplateStr) {
   var self = this;
 
   var body = [];
@@ -42,11 +43,11 @@ HtmlWebpackInlineSourcePlugin.prototype.processTags = function (compilation, reg
   var regex = new RegExp(regexStr);
 
   pluginData.head.forEach(function (tag) {
-    head.push(self.processTag(compilation, regex, tag));
+    head.push(self.processTag(compilation, regex, tag, nonceTemplateStr));
   });
 
   pluginData.body.forEach(function (tag) {
-    body.push(self.processTag(compilation, regex, tag));
+    body.push(self.processTag(compilation, regex, tag, nonceTemplateStr));
   });
 
   return { head: head, body: body, plugin: pluginData.plugin, chunks: pluginData.chunks, outputName: pluginData.outputName };
@@ -83,7 +84,7 @@ HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilatio
   });
 };
 
-HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag) {
+HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag, nonceTemplateStr) {
   var assetUrl;
 
   // inline js
@@ -93,13 +94,13 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
       tagName: 'script',
       closeTag: true,
       attributes: {
-        type: 'text/javascript',
-        nonce: 'myNonce1234 {{ .CSPNonce }} bbb'
+        type: 'text/javascript'
       }
     };
 
-    // Add CSP nonce template string if supplied
-    tag.outerHTML = tag.outerHTML.replace(/^<script/gi, '<script xyz zyx');
+    if (nonceTemplateStr) {
+      tag.attributes.nonce = nonceTemplateStr;
+    }
 
   // inline css
   } else if (tag.tagName === 'link' && regex.test(tag.attributes.href)) {
