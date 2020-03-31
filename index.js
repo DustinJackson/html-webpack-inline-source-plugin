@@ -82,6 +82,7 @@ HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilatio
 
 HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, regex, tag, filename) {
   var assetUrl;
+  var preTag = tag;
 
   // inline js
   if (tag.tagName === 'script' && tag.attributes && regex.test(tag.attributes.src)) {
@@ -115,8 +116,12 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
     }
     var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
     var asset = getAssetByName(compilation.assets, assetName);
-    var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
-    tag.innerHTML = (tag.tagName === 'script') ? updatedSource.replace(/(<)(\/script>)/g, '\\x3C$2') : updatedSource;
+    if (compilation.assets[assetName] !== undefined) {
+      var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
+      tag.innerHTML = (tag.tagName === 'script') ? updatedSource.replace(/(<)(\/script>)/g, '\\x3C$2') : updatedSource;
+    }else{
+      return preTag;
+    }
   }
 
   return tag;
