@@ -114,7 +114,7 @@ HtmlWebpackInlineSourcePlugin.prototype.processTag = function (compilation, rege
     if (path.basename(filename) !== filename) {
       assetUrl = path.dirname(filename) + '/' + assetUrl;
     }
-    var assetName = path.posix.relative(publicUrlPrefix, assetUrl);
+    var assetName = path.posix.relative(publicUrlPrefix, assetUrl).replace(/^(\.\.\/)+/g, '');
     var asset = getAssetByName(compilation.assets, assetName);
     if (compilation.assets[assetName] !== undefined) {
       var updatedSource = this.resolveSourceMaps(compilation, assetName, asset);
