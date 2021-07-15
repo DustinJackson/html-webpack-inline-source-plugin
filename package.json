@@ -1,6 +1,6 @@
 {
   "name": "@effortlessmotion/html-webpack-inline-source-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Embed javascript and css source inline when using the webpack dev server or middleware",
   "main": "index.js",
   "types": "index.d.ts",
@@ -45,8 +45,8 @@
     "webpack": "^5.44.0"
   },
   "peerDependencies": {
-    "html-webpack-plugin": "5>=",
-    "webpack": "5>="
+    "html-webpack-plugin": ">=5",
+    "webpack": ">=5"
   },
   "dependencies": {
     "escape-string-regexp": "^4.0.0",
