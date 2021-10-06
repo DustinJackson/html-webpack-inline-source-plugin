@@ -1,6 +1,6 @@
 {
-  "name": "html-webpack-inline-source-plugin",
-  "version": "1.0.0-beta.2",
+  "name": "@effortlessmotion/html-webpack-inline-source-plugin",
+  "version": "1.0.1",
   "description": "Embed javascript and css source inline when using the webpack dev server or middleware",
   "main": "index.js",
   "types": "index.d.ts",
@@ -12,6 +12,7 @@
     "prepublish": "npm run test",
     "pretest": "semistandard",
     "test": "jasmine",
+    "test-compat": "nvu engines npm test",
     "debug": "node-debug jasmine"
   },
   "repository": {
@@ -32,19 +33,27 @@
   },
   "homepage": "https://github.com/dustinjackson/html-webpack-inline-source-plugin",
   "devDependencies": {
-    "cheerio": "^0.22.0",
-    "css-loader": "^0.25.0",
-    "extract-text-webpack-plugin": "^4.0.0-beta.0",
-    "html-webpack-plugin": "^4.0.0-beta.4",
-    "jasmine": "^2.4.1",
-    "rimraf": "^2.5.2",
-    "semistandard": "^7.0.5",
-    "style-loader": "^0.13.1",
-    "webpack": "^4.20.2"
+    "cheerio": "^1.0.0-rc.10",
+    "css-loader": "^6.0.0",
+    "html-webpack-plugin": "^5.3.2",
+    "jasmine": "^3.8.0",
+    "mini-css-extract-plugin": "^2.1.0",
+    "node-version-use": "^0.1.21",
+    "rimraf": "^3.0.2",
+    "semistandard": "^16.0.1",
+    "style-loader": "^3.1.0",
+    "webpack": "^5.44.0"
+  },
+  "peerDependencies": {
+    "html-webpack-plugin": ">=5",
+    "webpack": ">=5"
   },
   "dependencies": {
-    "escape-string-regexp": "^1.0.5",
-    "slash": "^1.0.0",
-    "source-map-url": "^0.4.0"
+    "escape-string-regexp": "^4.0.0",
+    "slash": "^3.0.0",
+    "source-map-url": "^0.4.1"
+  },
+  "engines": {
+    "node": ">=10.13.0"
   }
 }
