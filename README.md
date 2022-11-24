@@ -1,6 +1,4 @@
-This plugin is no longer maintained.  Facebook provides a similar plugin:
-
-https://github.com/facebook/create-react-app/blob/edc671eeea6b7d26ac3f1eb2050e50f75cf9ad5d/packages/react-dev-utils/InlineChunkHtmlPlugin.js#L10
+This plugin is no longer maintained. 
 
 
 Inline Source extension for the HTML Webpack Plugin
