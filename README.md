@@ -1,4 +1,4 @@
-This plugin is no longer maintained. 
+#This plugin is no longer maintained. 
 
 
 Inline Source extension for the HTML Webpack Plugin
