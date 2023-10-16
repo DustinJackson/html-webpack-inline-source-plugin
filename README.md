@@ -1,5 +1,7 @@
 # This plugin is no longer maintained. 
 
+see: https://github.com/icelam/html-inline-script-webpack-plugin
+
 
 Inline Source extension for the HTML Webpack Plugin
 ========================================
