@@ -71,7 +71,12 @@ HtmlWebpackInlineSourcePlugin.prototype.resolveSourceMaps = function (compilatio
   var publicPath = out.publicPath || '';
   // Prepend Webpack public URL path to source map relative path
   // Calling `slash` converts Windows backslashes to forward slashes
-  var mapUrlCorrected = slash(path.join(publicPath, mapPathRelative));
+  var mapUrlCorrected;
+  if (publicPath.indexOf('http') === 0) {
+    mapUrlCorrected = publicPath + '/' + mapPathRelative
+  } else { 
+    mapUrlCorrected = slash(path.join(publicPath, mapPathRelative));
+  }
   // Regex: exact original sourcemap URL, possibly '*/' (for CSS), then EOF, ignoring whitespace
   var regex = new RegExp(escapeRegex(mapUrlOriginal) + '(\\s*(?:\\*/)?\\s*$)');
   // Replace sourcemap URL and (if necessary) preserve closing '*/' and whitespace
